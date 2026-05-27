@@ -51,7 +51,7 @@ renderizarTabla(colaboradores);
 formulario.reset();
 });
 //Requerimiento 2: Listado Dinámico//
- //función pR renderizar la tabla, recibe un arreglo(puede ser el completo o el filtrado) para mostrarlo en el HTML//
+ //función para renderizar la tabla, recibe un arreglo(puede ser el completo o el filtrado) para mostrarlo en el HTML//
  function renderizarTabla(listaColaboradores){
     //se limpia el contenido anterior de la tabla//
     cuerpoTabla.innerHTML = '';
@@ -73,4 +73,33 @@ formulario.reset();
     //se agrega la fila al cuerpo de la tabla//
     cuerpoTabla.appendChild(fila);
     });
+}
+//Requerimiento 3: Buscador y filtrado//
+//función  reutilizable para filtrar colaboradores//
+ function filtrarColaboradores(){
+    const textoBusqueda = buscador.value.toLowerCase();
+    //se usa el metodo filter para crear un nuevo arreglo que coincida con la busqueda//
+    const colaboradoresFiltrados = colaboradores.filter(function(colaborador){
+        // se usa includes para buscar por nombre o cargo//
+        const coincideNombre = colaborador.nombre.toLowerCase().includes(textoBusqueda);
+        const coincideCargo = colaborador.cargo.toLowerCase().includes(textoBusqueda);
+        return coincideNombre || coincideCargo;
+    });
+    //se renderiza la tabla solo con los resultados filtrados//
+    renderizarTabla(colaboradoresFiltrados);
+}
+// el evento se escucha cada vez que el usuario escriba en el campo de busqueda//
+buscador.addEventListener('input', filtrarColaboradores);
+
+//Requerimiento 4: Eliminar Colaborador//
+
+//la funcion que recibe el ID del colaborador a eliminar//
+function eliminarColaborador(id){
+    //se actualiza el arreglo global, filtrando y dejando solo aquellos cuyo ID sea diferente al que queremos borrar//
+    colaboradores = colaboradores.filter(function(colaborador){
+        return colaborador.id !== id;
+    });
+    //En lugar de llamar a renderizarTabla directamente, llamamos a filtrarColaboradores()//
+    //Esto asegura que si eliminamos mientras estamos buscando, el filtro se mantenga visualmente//
+    filtrarColaboradores();
 }
